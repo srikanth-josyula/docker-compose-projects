@@ -30,7 +30,7 @@ public class DocumentServiceImpl implements DocumentService {
 	// // Change to your path
 
 	// Use system property or default path
-	private static final String UPLOAD_DIR = System.getProperty("upload.path", "/default/temp/path");
+	private static final String UPLOAD_DIR = System.getProperty("upload.path", "/uploads");
 
 	@Transactional
 	@Override

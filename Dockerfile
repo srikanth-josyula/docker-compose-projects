@@ -18,9 +18,10 @@ COPY src/main/resources/application.properties /app/application.properties
 COPY src/main/resources/schema.sql /app/schema.sql
 
 VOLUME /logs
-VOLUME /upload-directory
+VOLUME /uploads
+
 
 # Set the default command to run the JAR file with system properties
-ENTRYPOINT ["java", "-Dlog.path=/logs", "-Dupload.path=/upload-directory", "-jar", "/app/springboot-docker-compose.jar", "--spring.config.location=file:/app/application.properties"]
+ENTRYPOINT ["java", "-Dlog.path=/logs", "-Dupload.path=/uploads", "-jar", "/app/springboot-docker-compose.jar", "--spring.config.location=file:/app/application.properties"]
 
 EXPOSE 8181
