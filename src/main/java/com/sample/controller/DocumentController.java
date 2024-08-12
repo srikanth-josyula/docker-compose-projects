@@ -7,6 +7,8 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
@@ -28,46 +30,60 @@ import com.sample.serivces.DocumentService;
 @RestController
 public class DocumentController {
 
-    @Autowired
-    private DocumentService documentService;
+	private static final Logger logger = LogManager.getLogger(DocumentController.class);
 
-    @PostMapping(value = { "/upload" }, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Document> uploadBinary(
-    		@RequestPart("file") MultipartFile file,
-            @RequestParam("name") String name, 
-            @RequestParam("title") String title,
-            @RequestParam(value = "createdBy", defaultValue = "SYSTEM", required = false) String createdBy,
-            @RequestParam(value = "createdDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDate) throws IOException {
+	@Autowired
+	private DocumentService documentService;
 
-        if (createdDate == null) {
-            createdDate = LocalDate.now();
-        }
+	@PostMapping(value = { "/upload" }, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<Document> uploadBinary(@RequestPart("file") MultipartFile file,
+			@RequestParam("name") String name, @RequestParam("title") String title,
+			@RequestParam(value = "createdBy", defaultValue = "SYSTEM", required = false) String createdBy,
+			@RequestParam(value = "createdDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDate)
+			throws IOException {
 
-        Document document = new Document();
-        document.setName(name);
-        document.setTitle(title);
-        document.setCreatedBy(createdBy);
-        document.setCreatedDate(java.sql.Date.valueOf(createdDate));
+		logger.info("Upload request received for file: {}, name: {}, title: {}", file.getOriginalFilename(), name,
+				title);
 
-        Document respDoc = documentService.saveDocument(document);
-        return ResponseEntity.ok(respDoc);
-    }
+		if (createdDate == null) {
+			createdDate = LocalDate.now();
+			logger.info("Created date not provided, using current date: {}", createdDate);
+		}
 
-    @GetMapping("/download/{id}")
-    public ResponseEntity<byte[]> downloadFile(@PathVariable("id") String id) throws IOException, DocumentNotFoundException {
+		Document document = new Document();
+		document.setName(name);
+		document.setTitle(title);
+		document.setCreatedBy(createdBy);
+		document.setCreatedDate(java.sql.Date.valueOf(createdDate));
+		logger.info("Saving document: {}", document);
+		Document respDoc = documentService.saveDocument(document);
 
-        UUID uuid = UUID.fromString(id);
-        Document document = documentService.getDocumentById(uuid);
+		logger.info("Document saved successfully with ID: {}", respDoc.getId());
+		return ResponseEntity.ok(respDoc);
+	}
 
-        Path path = Paths.get(document.getFilePath());
-        if (!Files.exists(path)) {
-            throw new DocumentNotFoundException("File not found at path: " + document.getFilePath());
-        }
-        byte[] fileContent = Files.readAllBytes(path);
+	@GetMapping("/download/{id}")
+	public ResponseEntity<byte[]> downloadFile(@PathVariable("id") String id)
+			throws IOException, DocumentNotFoundException {
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        headers.setContentDispositionFormData("attachment", document.getName());
-        return new ResponseEntity<>(fileContent, headers, HttpStatus.OK);
-    }
+		logger.info("Download request received for document ID: {}", id);
+
+		UUID uuid = UUID.fromString(id);
+		Document document = documentService.getDocumentById(uuid);
+
+		logger.info("Document retrieved: {}", document);
+		Path path = Paths.get(document.getFilePath());
+		if (!Files.exists(path)) {
+			logger.error("File not found at path: {}", document.getFilePath());
+			throw new DocumentNotFoundException("File not found at path: " + document.getFilePath());
+		}
+		byte[] fileContent = Files.readAllBytes(path);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		headers.setContentDispositionFormData("attachment", document.getName());
+
+		logger.info("Returning file content for download with name: {}", document.getName());
+		return new ResponseEntity<>(fileContent, headers, HttpStatus.OK);
+	}
 }
