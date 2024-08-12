@@ -1,0 +1,8 @@
+version: '3.9'
+
+services:
+  hello-world:
+    build: .  # Builds the image using the Dockerfile in the current directory
+    ports:
+      - "8090:8181"  # Maps port 8090 on the host to port 8181 inside the container
+    container_name: sample_docker_compose_app
