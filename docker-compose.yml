@@ -15,8 +15,8 @@ services:
       - "5432:5432"
 
   app:
-    image: springboot-doc-service:latest
-    container_name: springboot-app
+    image: springboot-document-service:v1
+    container_name: springboot-document-services
     build:
       context: .
       dockerfile: Dockerfile
