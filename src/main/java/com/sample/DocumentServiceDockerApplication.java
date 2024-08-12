@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SampleDockerApplication {
+public class DocumentServiceDockerApplication {
     public static void main(String[] args) {
-        SpringApplication.run(SampleDockerApplication.class, args);
+        SpringApplication.run(DocumentServiceDockerApplication.class, args);
     }
 }

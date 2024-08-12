@@ -16,34 +16,30 @@ import jakarta.persistence.Table;
 @Table(name = "documents")
 public class Document {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@JsonProperty("doc_id")
-	private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonProperty("doc_id")
+    private UUID id;
 
-	@Column(name = "doc_name", nullable = false)
-	@JsonProperty("doc_name")
-	private String name;
+    @Column(name = "doc_name", nullable = false)
+    @JsonProperty("doc_name")
+    private String name;
 
-	@Column(name = "doc_title", nullable = false)
-	@JsonProperty("doc_title")
-	private String title;
+    @Column(name = "doc_title", nullable = false)
+    @JsonProperty("doc_title")
+    private String title;
 
-	@Column(name = "created_by", nullable = false)
-	@JsonProperty("created_by")
-	private String createdBy;
+    @Column(name = "created_by", nullable = false)
+    @JsonProperty("created_by")
+    private String createdBy;
 
-	@Column(name = "created_date", nullable = false)
-	@JsonProperty("created_date")
-	private Date createdDate;
+    @Column(name = "created_date", nullable = false)
+    @JsonProperty("created_date")
+    private Date createdDate;
 
-	@Column(name = "document_content")
-	@JsonProperty("document_content")
-	private String documentContent;
-
-	@Column(name = "file_path")
-	@JsonProperty("file_path")
-	private String filePath;
+    @Column(name = "file_path")
+    @JsonProperty("file_path")
+    private String filePath;
 
 	public UUID getId() {
 		return id;
@@ -85,14 +81,6 @@ public class Document {
 		this.createdDate = createdDate;
 	}
 
-	public String getDocumentContent() {
-		return documentContent;
-	}
-
-	public void setDocumentContent(String documentContent) {
-		this.documentContent = documentContent;
-	}
-
 	public String getFilePath() {
 		return filePath;
 	}
@@ -100,5 +88,6 @@ public class Document {
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
 	}
+
 
 }
