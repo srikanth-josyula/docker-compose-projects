@@ -22,3 +22,5 @@ VOLUME /upload-directory
 
 # Set the default command to run the JAR file with system properties
 ENTRYPOINT ["java", "-Dlog.path=/logs", "-Dupload.path=/upload-directory", "-jar", "/app/springboot-docker-compose.jar", "--spring.config.location=file:/app/application.properties"]
+
+EXPOSE 8181
