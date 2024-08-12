@@ -25,8 +25,6 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/documents_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: admin
-      LOGGING_FILE_PATH: /logs/app.log
-      UPLOAD_DIR: /uploads
     volumes:
       - app_logs:/logs
       - app_files:/uploads
